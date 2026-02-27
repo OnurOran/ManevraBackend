@@ -1,0 +1,81 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: MyApp.Api/Dockerfile
+    ports:
+      - "${API_PORT:-8080}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=${MSSQL_DB:-myapp};User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      - Jwt__Secret=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-MyApp}
+      - Jwt__Audience=${JWT_AUDIENCE:-MyApp}
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - myapp-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-YourStrong!Passw0rd}
+    ports:
+      - "${MSSQL_PORT:-1433}:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools*/bin/sqlcmd -S localhost -U sa -P \"${MSSQL_SA_PASSWORD:-YourStrong!Passw0rd}\" -Q 'SELECT 1' -b || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - myapp-network
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web console
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - myapp-network
+    profiles:
+      - dev
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    networks:
+      - myapp-network
+    profiles:
+      - dev
+
+volumes:
+  sqlserver_data:
+  minio_data:
+
+networks:
+  myapp-network:
+    driver: bridge

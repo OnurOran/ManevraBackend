@@ -1,0 +1,17 @@
+using Microsoft.AspNetCore.Identity;
+
+namespace MyApp.Api.Domain.Entities;
+
+public class RolePermission
+{
+    public Guid RoleId { get; private set; }
+    public Guid PermissionId { get; private set; }
+
+    public virtual IdentityRole<Guid> Role { get; private set; } = null!;
+    public virtual Permission Permission { get; private set; } = null!;
+
+    private RolePermission() { }
+
+    public static RolePermission Create(Guid roleId, Guid permissionId) =>
+        new() { RoleId = roleId, PermissionId = permissionId };
+}

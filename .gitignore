@@ -1,0 +1,123 @@
+# ========================
+# Build outputs
+# ========================
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+publish/
+artifacts/
+
+# ========================
+# .NET / NuGet
+# ========================
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+# NuGet cache
+*.lock.json
+
+# ========================
+# Test & Coverage
+# ========================
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.cobertura.xml
+*.opencover.xml
+
+# ========================
+# Publish profiles
+# ========================
+**/Properties/PublishProfiles/
+
+# ========================
+# IDE — JetBrains Rider
+# ========================
+.idea/
+*.DotSettings.user
+*.sln.iml
+
+# ========================
+# IDE — Visual Studio
+# ========================
+.vs/
+*.DotSettings.user
+*.vsp
+*.vspx
+*.sap
+_UpgradeReport_Files/
+Backup*/
+UpgradeLog*.xml
+UpgradeLog*.htm
+ServiceFabricBackup/
+
+# ========================
+# IDE — VS Code
+# ========================
+.vscode/
+!.vscode/extensions.json
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+*.txt.bak
+
+# ========================
+# Environment & Secrets
+# ========================
+.env
+!.env.example
+*.pfx
+*.p12
+*.pem
+*.key
+secrets.json
+appsettings.local.json
+appsettings.*.local.json
+
+# ========================
+# Docker
+# ========================
+.dockerignore
+
+# ========================
+# OS — macOS
+# ========================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ========================
+# OS — Windows
+# ========================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+
+# ========================
+# OS — Linux
+# ========================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Source generators must target netstandard2.0 -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <!-- Enforces that this project follows analyzer/generator rules -->
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <!-- Required: tells MSBuild this is a Roslyn source generator/analyzer component -->
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <!-- RS2008: release tracking is only needed when shipping analyzers as NuGet packages -->
+    <NoWarn>RS2008</NoWarn>
+    <!-- Generator DLL should not be copied to output of consuming projects -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
