@@ -14,24 +14,37 @@ public class GetCleanupListHandler : IQueryHandler<GetCleanupListQuery, List<Cle
 
     public async Task<Result<List<CleanupEntryResponse>>> Handle(GetCleanupListQuery query, CancellationToken ct)
     {
-        // Get the latest cleanup date per wagon, ordered by oldest first
-        var entries = await _db.CleanupHistories
-            .GroupBy(c => c.WagonId)
-            .Select(g => new
-            {
-                WagonId = g.Key,
-                CleanupDate = g.Max(c => c.CleanupDate),
-            })
-            .Join(_db.Wagons, c => c.WagonId, w => w.Id, (c, w) => new CleanupEntryResponse
-            {
-                WagonId = c.WagonId,
-                WagonNumber = w.WagonNumber,
-                Line = (byte)w.Line,
-                CleanupDate = c.CleanupDate,
-            })
-            .OrderBy(c => c.CleanupDate)
+        // Get the top-2 cleanup dates per wagon
+        var allCleanups = await _db.CleanupHistories
+            .OrderByDescending(c => c.CleanupDate)
+            .Select(c => new { c.WagonId, c.CleanupDate })
             .ToListAsync(ct);
 
-        return Result<List<CleanupEntryResponse>>.Success(entries);
+        var wagonLookup = await _db.Wagons
+            .Select(w => new { w.Id, w.WagonNumber, w.Line })
+            .ToDictionaryAsync(w => w.Id, ct);
+
+        var grouped = allCleanups
+            .GroupBy(c => c.WagonId)
+            .Select(g =>
+            {
+                var top2 = g.Take(2).ToList();
+                var wagon = wagonLookup.GetValueOrDefault(g.Key);
+                if (wagon is null) return null;
+                return new CleanupEntryResponse
+                {
+                    WagonId = g.Key,
+                    WagonNumber = wagon.WagonNumber,
+                    Line = (byte)wagon.Line,
+                    CleanupDate = top2[0].CleanupDate,
+                    PreviousCleanupDate = top2.Count > 1 ? top2[1].CleanupDate : null,
+                };
+            })
+            .Where(e => e is not null)
+            .OrderBy(e => e!.CleanupDate)
+            .Cast<CleanupEntryResponse>()
+            .ToList();
+
+        return Result<List<CleanupEntryResponse>>.Success(grouped);
     }
 }
