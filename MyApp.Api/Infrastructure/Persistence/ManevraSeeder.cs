@@ -48,6 +48,10 @@ public static class ManevraSeeder
         for (byte s = 1; s <= 4; s++)
             db.TrackSlots.Add(TrackSlot.Create(tem.Id, SectionType.AtolyeYollari, s));
 
+        // TEM also has Yikama Taraf: 2 slots
+        for (byte s = 1; s <= 2; s++)
+            db.TrackSlots.Add(TrackSlot.Create(tem.Id, SectionType.YikamaTaraf, s));
+
         // A1-A9 tracks
         for (var i = 1; i <= 9; i++)
         {
@@ -62,10 +66,17 @@ public static class ManevraSeeder
                     db.TrackSlots.Add(TrackSlot.Create(track.Id, SectionType.ItfaiyeTaraf, s));
             }
 
-            // Atolye Yollari: TEM and A1-A6 = 4 slots, A7-A9 = 1 slot
-            var atolyeCount = i <= 6 ? 4 : 1;
-            for (byte s = 1; s <= atolyeCount; s++)
-                db.TrackSlots.Add(TrackSlot.Create(track.Id, SectionType.AtolyeYollari, s));
+            // Atolye Yollari: TEM and A1-A6 = 4 slots, A7/A8 = 1 slot at index 1, A9 = 1 slot at index 4
+            if (i <= 6)
+            {
+                for (byte s = 1; s <= 4; s++)
+                    db.TrackSlots.Add(TrackSlot.Create(track.Id, SectionType.AtolyeYollari, s));
+            }
+            else
+            {
+                byte slotIndex = i == 9 ? (byte)4 : (byte)1;
+                db.TrackSlots.Add(TrackSlot.Create(track.Id, SectionType.AtolyeYollari, slotIndex));
+            }
 
             // Yikama Taraf: 2 slots, but A7 and A8 are closed (no rows)
             if (i != 7 && i != 8)
