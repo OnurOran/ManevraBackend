@@ -43,6 +43,20 @@ public static class Permissions
         public const string Edit = "cleanup.edit";
     }
 
+    public static class WeeklyMaintenance
+    {
+        public const string View = "weekly-maintenance.view";
+        public const string Edit = "weekly-maintenance.edit";
+    }
+
+    public static class Field
+    {
+        public const string View = "field.view";
+    }
+
+    public const string OfficeRole = "Office";
+    public const string FieldRole = "Field";
+
     /// <summary>Returns every permission constant defined in this class via reflection.</summary>
     public static IEnumerable<string> GetAll() =>
         typeof(Permissions)

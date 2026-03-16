@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyApp.Api.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using MyApp.Api.Infrastructure.Persistence;
 namespace MyApp.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260315154653_AddWeeklyMaintenanceEntries")]
+    partial class AddWeeklyMaintenanceEntries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -413,11 +416,6 @@ namespace MyApp.Api.Migrations
                     b.Property<byte>("SlotIndex")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte>("TableType")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint")
-                        .HasDefaultValue((byte)1);
-
                     b.Property<int>("WagonId")
                         .HasColumnType("int");
 
@@ -428,7 +426,7 @@ namespace MyApp.Api.Migrations
 
                     b.HasIndex("WagonId");
 
-                    b.HasIndex("TableType", "WeekStartDate", "DayOfWeek", "ShiftType", "SlotIndex")
+                    b.HasIndex("WeekStartDate", "DayOfWeek", "ShiftType", "SlotIndex")
                         .IsUnique();
 
                     b.ToTable("WeeklyMaintenanceEntries");
