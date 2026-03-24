@@ -37,16 +37,10 @@ public static class InfrastructureExtensions
             .ValidateOnStart();
 
         services.AddOptions<StorageOptions>()
-            .Bind(configuration.GetSection(StorageOptions.SectionName))
-            .Validate(o => !string.IsNullOrWhiteSpace(o.BucketName),
-                "Storage:BucketName is required.")
-            .ValidateOnStart();
+            .Bind(configuration.GetSection(StorageOptions.SectionName));
 
         services.AddOptions<EmailOptions>()
-            .Bind(configuration.GetSection(EmailOptions.SectionName))
-            .Validate(o => !string.IsNullOrWhiteSpace(o.Host),
-                "Email:Host is required.")
-            .ValidateOnStart();
+            .Bind(configuration.GetSection(EmailOptions.SectionName));
 
         // JWT token service
         services.AddScoped<JwtTokenService>();
