@@ -31,7 +31,13 @@ public class TrackLayoutResponse
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public byte Zone { get; set; }
+    public string? Note { get; set; }
     public List<TrackSlotResponse> Slots { get; set; } = [];
+}
+
+public class UpdateTrackNoteRequest
+{
+    public string? Note { get; set; }
 }
 
 public class PendingTransferResponse

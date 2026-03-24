@@ -12,5 +12,6 @@ public class TrackConfiguration : IEntityTypeConfiguration<Track>
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.Name).IsRequired().HasMaxLength(64);
         builder.Property(x => x.Zone).IsRequired();
+        builder.Property(x => x.Note).HasMaxLength(32);
     }
 }

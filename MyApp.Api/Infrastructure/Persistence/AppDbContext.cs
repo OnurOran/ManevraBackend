@@ -28,6 +28,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, Microsoft.AspNetC
     public DbSet<WagonTransfer> WagonTransfers => Set<WagonTransfer>();
     public DbSet<CleanupHistory> CleanupHistories => Set<CleanupHistory>();
     public DbSet<WeeklyMaintenanceEntry> WeeklyMaintenanceEntries => Set<WeeklyMaintenanceEntry>();
+    public DbSet<DeadWagonEntry> DeadWagonEntries => Set<DeadWagonEntry>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

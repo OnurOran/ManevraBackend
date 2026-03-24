@@ -48,6 +48,10 @@ public static class ManevraSeeder
         for (byte s = 1; s <= 4; s++)
             db.TrackSlots.Add(TrackSlot.Create(tem.Id, SectionType.AtolyeYollari, s));
 
+        // TEM also has Itfaiye Taraf: 2 slots
+        for (byte s = 1; s <= 2; s++)
+            db.TrackSlots.Add(TrackSlot.Create(tem.Id, SectionType.ItfaiyeTaraf, s));
+
         // TEM also has Yikama Taraf: 2 slots
         for (byte s = 1; s <= 2; s++)
             db.TrackSlots.Add(TrackSlot.Create(tem.Id, SectionType.YikamaTaraf, s));

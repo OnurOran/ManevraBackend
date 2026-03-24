@@ -49,6 +49,7 @@ public class GetLayoutHandler : IQueryHandler<GetLayoutQuery, LayoutResponse>
             Id = t.Id,
             Name = t.Name,
             Zone = (byte)t.Zone,
+            Note = t.Note,
             Slots = t.Slots.OrderBy(s => s.SectionType).ThenBy(s => s.SlotIndex).Select(s => new TrackSlotResponse
             {
                 Id = s.Id,

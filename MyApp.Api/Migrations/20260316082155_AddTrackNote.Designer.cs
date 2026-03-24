@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyApp.Api.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using MyApp.Api.Infrastructure.Persistence;
 namespace MyApp.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260316082155_AddTrackNote")]
+    partial class AddTrackNote
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,25 +278,6 @@ namespace MyApp.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Convoys");
-                });
-
-            modelBuilder.Entity("MyApp.Api.Domain.Entities.Manevra.DeadWagonEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("WagonId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WagonId")
-                        .IsUnique();
-
-                    b.ToTable("DeadWagonEntries");
                 });
 
             modelBuilder.Entity("MyApp.Api.Domain.Entities.Manevra.Track", b =>
@@ -587,17 +571,6 @@ namespace MyApp.Api.Migrations
                 });
 
             modelBuilder.Entity("MyApp.Api.Domain.Entities.Manevra.CleanupHistory", b =>
-                {
-                    b.HasOne("MyApp.Api.Domain.Entities.Manevra.Wagon", "Wagon")
-                        .WithMany()
-                        .HasForeignKey("WagonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Wagon");
-                });
-
-            modelBuilder.Entity("MyApp.Api.Domain.Entities.Manevra.DeadWagonEntry", b =>
                 {
                     b.HasOne("MyApp.Api.Domain.Entities.Manevra.Wagon", "Wagon")
                         .WithMany()

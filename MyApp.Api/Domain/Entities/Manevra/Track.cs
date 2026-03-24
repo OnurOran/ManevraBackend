@@ -5,6 +5,7 @@ public class Track
     public int Id { get; private set; }
     public string Name { get; private set; } = string.Empty;
     public TrackZone Zone { get; private set; }
+    public string? Note { get; private set; }
 
     public ICollection<TrackSlot> Slots { get; private set; } = [];
 
@@ -14,4 +15,6 @@ public class Track
     {
         return new Track { Name = name, Zone = zone };
     }
+
+    public void SetNote(string? note) => Note = note;
 }

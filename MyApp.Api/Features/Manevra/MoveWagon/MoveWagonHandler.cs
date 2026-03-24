@@ -36,7 +36,19 @@ public class MoveWagonHandler : ICommandHandler<MoveWagonCommand, bool>
 
         // ── Single wagon movement ────────────────────────────────────────
         if (targetSlot.WagonId is not null)
-            return Result<bool>.Failure("Target slot is not empty.");
+            return Result<bool>.Failure("Hedef slot dolu.");
+
+        // Block move if wagon already has a pending transfer
+        var hasPendingTransfer = await _db.WagonTransfers
+            .AnyAsync(t => t.WagonId == wagon.Id && !t.IsApproved, ct);
+        if (hasPendingTransfer)
+            return Result<bool>.Failure("Bu vagonun bekleyen bir transferi var.");
+
+        // Block move if target slot has a pending transfer incoming
+        var targetHasPending = await _db.WagonTransfers
+            .AnyAsync(t => t.ToSlotId == targetSlot.Id && !t.IsApproved, ct);
+        if (targetHasPending)
+            return Result<bool>.Failure("Hedef slotta bekleyen bir transfer var.");
 
         var sourceSlot = await _db.TrackSlots
             .Include(s => s.Track)
@@ -45,7 +57,24 @@ public class MoveWagonHandler : ICommandHandler<MoveWagonCommand, bool>
         var sourceZone = sourceSlot?.Track.Zone;
         var targetZone = targetSlot.Track.Zone;
 
-        // ── Zone 3 target constraints ────────────────────────────────────
+        // ── Zone 3 → Zone 3 (internal move within Cari Hatta) ──────────
+        if (sourceZone == TrackZone.CariHattaHazirDiziler && targetZone == TrackZone.CariHattaHazirDiziler)
+        {
+            // Check IsOnlyMiddle constraint for head/tail positions
+            if (targetSlot.SlotIndex == 1 || targetSlot.SlotIndex == GetMaxSlotIndex(targetSlot))
+            {
+                if (wagon.IsOnlyMiddle)
+                    return Result<bool>.Failure("Baş veya son slota sadece IsOnlyMiddle=FALSE olan vagonlar yerleştirilebilir.");
+            }
+
+            sourceSlot!.SetWagonId(null);
+            targetSlot.SetWagonId(wagon.Id);
+            await _db.SaveChangesAsync(ct);
+            await _notifications.SendToGroupAsync("manevra", "TrackLayoutUpdated", new { }, ct);
+            return Result<bool>.Success(true);
+        }
+
+        // ── Zone 3 target (entering Zone 3 from outside) ───────────────
         if (targetZone == TrackZone.CariHattaHazirDiziler)
         {
             var zoneError = ValidateZone3SingleWagon(wagon, sourceZone);
