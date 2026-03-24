@@ -14,9 +14,9 @@ public class GetCleanupListHandler : IQueryHandler<GetCleanupListQuery, List<Cle
 
     public async Task<Result<List<CleanupEntryResponse>>> Handle(GetCleanupListQuery query, CancellationToken ct)
     {
-        // Get the top-2 cleanup dates per wagon
+        // Get the top-2 cleanups per wagon, ordered by insertion (most recent entry first)
         var allCleanups = await _db.CleanupHistories
-            .OrderByDescending(c => c.CleanupDate)
+            .OrderByDescending(c => c.Id)
             .Select(c => new { c.WagonId, c.CleanupDate })
             .ToListAsync(ct);
 
@@ -41,7 +41,6 @@ public class GetCleanupListHandler : IQueryHandler<GetCleanupListQuery, List<Cle
                 };
             })
             .Where(e => e is not null)
-            .OrderBy(e => e!.CleanupDate)
             .Cast<CleanupEntryResponse>()
             .ToList();
 
