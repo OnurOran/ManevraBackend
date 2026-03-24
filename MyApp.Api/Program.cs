@@ -33,20 +33,18 @@ try
     app.UseHttpsRedirection();
     app.UseCors(CorsExtensions.PolicyName);
 
+    // Auto-apply pending EF Core migrations on startup.
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Database.MigrateAsync();
+    }
+
+    await DevSeeder.SeedAsync(app.Services, app.Configuration);
+    await ManevraSeeder.SeedAsync(app.Services);
+
     if (app.Environment.IsDevelopment())
     {
-        // Auto-apply pending EF Core migrations on startup so developers never
-        // have to run "dotnet ef database update" manually.
-        // MigrateAsync() is idempotent — safe to call even when schema is current.
-        using (var scope = app.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await db.Database.MigrateAsync();
-        }
-
-        await DevSeeder.SeedAsync(app.Services, app.Configuration);
-        await ManevraSeeder.SeedAsync(app.Services);
-
         app.MapOpenApi();
         app.MapScalarApiReference(options =>
         {
