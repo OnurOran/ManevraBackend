@@ -39,6 +39,7 @@ public static partial class FeaturesExtensions
             ["cleanup"] = apiV1.MapGroup("/cleanup"),
             ["weekly-maintenance"] = apiV1.MapGroup("/weekly-maintenance"),
             ["dead-wagons"] = apiV1.MapGroup("/dead-wagons"),
+            ["faulty-wagons"] = apiV1.MapGroup("/faulty-wagons"),
         };
 
         MapGeneratedEndpoints(groups);

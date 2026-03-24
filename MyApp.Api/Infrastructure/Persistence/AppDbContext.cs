@@ -29,6 +29,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, Microsoft.AspNetC
     public DbSet<CleanupHistory> CleanupHistories => Set<CleanupHistory>();
     public DbSet<WeeklyMaintenanceEntry> WeeklyMaintenanceEntries => Set<WeeklyMaintenanceEntry>();
     public DbSet<DeadWagonEntry> DeadWagonEntries => Set<DeadWagonEntry>();
+    public DbSet<FaultyWagonEntry> FaultyWagonEntries => Set<FaultyWagonEntry>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

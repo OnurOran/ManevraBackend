@@ -28,22 +28,46 @@ public class UpdateWagonStatusHandler : ICommandHandler<UpdateWagonStatusCommand
         if (wagon is null)
             return Result<bool>.Failure("Wagon not found.");
 
-        // If wagon is in a convoy, update all wagons in the convoy
+        // Collect all wagons to update (convoy or single)
+        List<Wagon> wagonsToUpdate;
         if (wagon.ConvoyId.HasValue)
         {
-            var convoyWagons = await _db.Wagons
+            wagonsToUpdate = await _db.Wagons
                 .Where(w => w.ConvoyId == wagon.ConvoyId)
                 .ToListAsync(ct);
-            foreach (var w in convoyWagons)
-                w.SetStatus(status);
         }
         else
         {
-            wagon.SetStatus(status);
+            wagonsToUpdate = [wagon];
         }
+
+        foreach (var w in wagonsToUpdate)
+            w.SetStatus(status);
+
+        // Faulty wagon tracking
+        foreach (var w in wagonsToUpdate)
+            await SyncFaultyEntry(w, status, ct);
 
         await _db.SaveChangesAsync(ct);
         await _notifications.SendToGroupAsync("manevra", "TrackLayoutUpdated", new { }, ct);
         return Result<bool>.Success(true);
+    }
+
+    private async Task SyncFaultyEntry(Wagon wagon, WagonStatus newStatus, CancellationToken ct)
+    {
+        var existing = await _db.FaultyWagonEntries
+            .FirstOrDefaultAsync(e => e.WagonId == wagon.Id, ct);
+
+        if (newStatus == WagonStatus.CalismaYapilacak && existing is null)
+        {
+            // Became red → add to faulty list
+            _db.FaultyWagonEntries.Add(FaultyWagonEntry.Create(wagon.Id));
+        }
+        else if (newStatus == WagonStatus.Servis && existing is not null)
+        {
+            // Became green → remove from faulty list
+            _db.FaultyWagonEntries.Remove(existing);
+        }
+        // ServiseHazir (yellow) → no change, stays in faulty list if already there
     }
 }
