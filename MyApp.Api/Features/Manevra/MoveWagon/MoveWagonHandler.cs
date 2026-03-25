@@ -64,7 +64,7 @@ public class MoveWagonHandler : ICommandHandler<MoveWagonCommand, bool>
             if (targetSlot.SlotIndex == 1 || targetSlot.SlotIndex == GetMaxSlotIndex(targetSlot))
             {
                 if (wagon.IsOnlyMiddle)
-                    return Result<bool>.Failure("Baş veya son slota sadece IsOnlyMiddle=FALSE olan vagonlar yerleştirilebilir.");
+                    return Result<bool>.Failure($"Cari Hatta Hazır Dizilere taşınamaz. {wagon.WagonNumber} nolu vagon başta veya sonda olamaz, yer değişikliği yaparak tekrar deneyiniz.");
             }
 
             sourceSlot!.SetWagonId(null);
@@ -84,7 +84,7 @@ public class MoveWagonHandler : ICommandHandler<MoveWagonCommand, bool>
             if (targetSlot.SlotIndex == 1 || targetSlot.SlotIndex == GetMaxSlotIndex(targetSlot))
             {
                 if (wagon.IsOnlyMiddle)
-                    return Result<bool>.Failure("Baş veya son slota sadece IsOnlyMiddle=FALSE olan vagonlar yerleştirilebilir.");
+                    return Result<bool>.Failure($"Cari Hatta Hazır Dizilere taşınamaz. {wagon.WagonNumber} nolu vagon başta veya sonda olamaz, yer değişikliği yaparak tekrar deneyiniz.");
             }
 
             if (sourceSlot is not null)
