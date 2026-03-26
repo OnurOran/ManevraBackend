@@ -7,6 +7,7 @@ public class DeadWagonResponse
     public int WagonNumber { get; set; }
     public byte Line { get; set; }
     public byte Status { get; set; }
+    public bool IsOnlyMiddle { get; set; }
 }
 
 public class AddDeadWagonRequest

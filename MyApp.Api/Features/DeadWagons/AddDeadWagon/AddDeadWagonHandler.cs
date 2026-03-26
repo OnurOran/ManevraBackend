@@ -51,6 +51,7 @@ public class AddDeadWagonHandler : ICommandHandler<AddDeadWagonCommand, DeadWago
             WagonNumber = wagon.WagonNumber,
             Line = (byte)wagon.Line,
             Status = (byte)wagon.Status,
+            IsOnlyMiddle = wagon.IsOnlyMiddle,
         });
     }
 }

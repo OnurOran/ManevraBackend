@@ -77,6 +77,11 @@ public class MoveWagonHandler : ICommandHandler<MoveWagonCommand, bool>
         // ── Zone 3 target (entering Zone 3 from outside) ───────────────
         if (targetZone == TrackZone.CariHattaHazirDiziler)
         {
+            // Block if wagon is in dead wagon list
+            var isDeadWagon = await _db.DeadWagonEntries.AnyAsync(d => d.WagonId == wagon.Id, ct);
+            if (isDeadWagon)
+                return Result<bool>.Failure($"{wagon.WagonNumber} nolu vagon Servis Dışı Araçlar listesinde olduğu için Cari Hatta Hazır Dizilere taşınamaz.");
+
             var zoneError = ValidateZone3SingleWagon(wagon, sourceZone);
             if (zoneError is not null)
                 return Result<bool>.Failure(zoneError);

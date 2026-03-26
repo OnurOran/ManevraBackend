@@ -25,6 +25,7 @@ public class GetDeadWagonsHandler : IQueryHandler<GetDeadWagonsQuery, List<DeadW
                 WagonNumber = e.Wagon.WagonNumber,
                 Line = (byte)e.Wagon.Line,
                 Status = (byte)e.Wagon.Status,
+                IsOnlyMiddle = e.Wagon.IsOnlyMiddle,
             })
             .ToListAsync(ct);
 
