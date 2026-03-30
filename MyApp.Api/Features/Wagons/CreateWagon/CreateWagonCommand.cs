@@ -7,4 +7,5 @@ public class CreateWagonCommand : ICommand<WagonResponse>
 {
     public int WagonNumber { get; set; }
     public byte Line { get; set; }
+    public string TechnicalUnit { get; set; } = string.Empty;
 }

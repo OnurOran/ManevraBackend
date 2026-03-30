@@ -21,6 +21,9 @@ public class DeleteRoleHandler : ICommandHandler<DeleteRoleCommand, bool>
         if (role is null)
             return Result<bool>.Failure("Role not found.");
 
+        if (string.Equals(role.Name, Permissions.SuperAdminRole, StringComparison.OrdinalIgnoreCase))
+            return Result<bool>.Failure("The SuperAdmin role cannot be deleted.");
+
         if (string.Equals(role.Name, Permissions.AdminRole, StringComparison.OrdinalIgnoreCase))
             return Result<bool>.Failure("The Admin role cannot be deleted.");
 

@@ -21,6 +21,7 @@ public static class CreateWagonEndpoint
             {
                 WagonNumber = request.WagonNumber,
                 Line = request.Line,
+                TechnicalUnit = request.TechnicalUnit,
             };
             var result = await handler.Handle(command, ct);
             return result.IsSuccess

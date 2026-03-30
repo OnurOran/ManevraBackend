@@ -3,7 +3,8 @@ namespace MyApp.Api.Domain.Entities.Manevra;
 public enum WagonLine : byte
 {
     M1 = 1,
-    Tramvay = 2,
+    T1 = 2,
+    T4 = 3,
 }
 
 public enum WagonStatus : byte

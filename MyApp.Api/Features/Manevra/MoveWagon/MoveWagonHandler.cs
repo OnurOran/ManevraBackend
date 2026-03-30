@@ -175,7 +175,7 @@ public class MoveWagonHandler : ICommandHandler<MoveWagonCommand, bool>
 
             foreach (var w in orderedWagons)
             {
-                if (w.Line == WagonLine.Tramvay)
+                if (w.Line is WagonLine.T1 or WagonLine.T4)
                     return Result<bool>.Failure("Konvoy vagonları Cari Hatta kurallarını karşılamıyor.");
 
                 if (w.Status != WagonStatus.Servis)
@@ -226,7 +226,7 @@ public class MoveWagonHandler : ICommandHandler<MoveWagonCommand, bool>
 
     private static string? ValidateZone3SingleWagon(Wagon wagon, TrackZone? sourceZone)
     {
-        if (wagon.Line == WagonLine.Tramvay)
+        if (wagon.Line is WagonLine.T1 or WagonLine.T4)
             return "Tramvay vagonları Cari Hatta Hazır Diziler alanına giremez.";
 
         if (sourceZone is not (TrackZone.Garaj or TrackZone.Atolye))

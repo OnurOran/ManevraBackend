@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MyApp.Api.Common.Authorization;
 using MyApp.Api.Common.Behaviors;
 using MyApp.Api.Common.Models;
 using MyApp.Api.Domain.Entities.Manevra;
@@ -11,11 +12,13 @@ public class UpdateWagonStatusHandler : ICommandHandler<UpdateWagonStatusCommand
 {
     private readonly AppDbContext _db;
     private readonly INotificationService _notifications;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UpdateWagonStatusHandler(AppDbContext db, INotificationService notifications)
+    public UpdateWagonStatusHandler(AppDbContext db, INotificationService notifications, IHttpContextAccessor httpContextAccessor)
     {
         _db = db;
         _notifications = notifications;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Result<bool>> Handle(UpdateWagonStatusCommand command, CancellationToken ct)
@@ -27,6 +30,16 @@ public class UpdateWagonStatusHandler : ICommandHandler<UpdateWagonStatusCommand
         var wagon = await _db.Wagons.FindAsync([command.WagonId], ct);
         if (wagon is null)
             return Result<bool>.Failure("Wagon not found.");
+
+        // Zone-specific permission check
+        var slot = await _db.TrackSlots.FirstOrDefaultAsync(s => s.WagonId == command.WagonId, ct);
+        var requiredPermission = ZonePermissions.GetPermissionForStatusChange(slot?.SectionType, status);
+        if (requiredPermission is not null)
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            if (!ZonePermissions.UserHasPermission(user, requiredPermission))
+                return Result<bool>.Failure("Bu bölgede bu durum değişikliğini yapma yetkiniz yok.");
+        }
 
         // Collect all wagons to update (convoy or single)
         List<Wagon> wagonsToUpdate;

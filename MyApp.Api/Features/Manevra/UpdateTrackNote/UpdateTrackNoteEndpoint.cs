@@ -30,6 +30,6 @@ public static class UpdateTrackNoteEndpoint
         })
         .WithName("UpdateTrackNote")
         .WithTags("Manevra")
-        .RequirePermission(Permissions.Manevra.Edit);
+        .RequirePermission(Permissions.ItfaiyeYonu.Yaz);
     }
 }

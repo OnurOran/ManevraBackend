@@ -32,11 +32,11 @@ public class JwtTokenService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret));
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Email, user.Email!),
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-        claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+        claims.AddRange(roles.Select(r => new Claim("role", r)));
         claims.AddRange(permissions.Select(p => new Claim("permission", p)));
 
         var token = new JwtSecurityToken(

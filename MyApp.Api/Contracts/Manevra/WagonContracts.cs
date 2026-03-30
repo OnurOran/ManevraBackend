@@ -4,6 +4,7 @@ public class CreateWagonRequest
 {
     public int WagonNumber { get; set; }
     public byte Line { get; set; }
+    public string TechnicalUnit { get; set; } = string.Empty;
 }
 
 public class UpdateWagonStatusRequest
@@ -16,6 +17,7 @@ public class WagonResponse
     public int Id { get; set; }
     public int WagonNumber { get; set; }
     public byte Line { get; set; }
+    public string TechnicalUnit { get; set; } = string.Empty;
     public bool IsOnlyMiddle { get; set; }
     public byte Status { get; set; }
     public Guid? ConvoyId { get; set; }

@@ -59,7 +59,7 @@ public class PermissionSyncService : IHostedService
 
     private async Task EnsureAdminRoleAsync(AppDbContext db, RoleManager<IdentityRole<Guid>> roleManager, CancellationToken ct)
     {
-        const string adminRoleName = Permissions.AdminRole;
+        const string adminRoleName = Permissions.SuperAdminRole;
 
         if (!await roleManager.RoleExistsAsync(adminRoleName))
         {

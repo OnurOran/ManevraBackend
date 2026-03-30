@@ -26,6 +26,6 @@ public static class UpdateWagonStatusEndpoint
         })
         .WithName("UpdateWagonStatus")
         .WithTags("Wagons")
-        .RequirePermission(Permissions.Wagons.Edit);
+        .RequireAuthorization();
     }
 }

@@ -30,6 +30,16 @@ public class CreateConvoyHandler : ICommandHandler<CreateConvoyCommand, Guid>
         if (wagons.Count != command.WagonIds.Count)
             return Result<Guid>.Failure("Bir veya daha fazla vagon bulunamadı.");
 
+        // All wagons must be on the same line
+        var lines = wagons.Select(w => w.Line).Distinct().ToList();
+        if (lines.Count > 1)
+            return Result<Guid>.Failure("Dizi oluşturmak için tüm vagonlar aynı hatta ait olmalıdır.");
+
+        // Tramway convoys (T1, T4) can have at most 2 wagons
+        var line = lines[0];
+        if ((line is WagonLine.T1 or WagonLine.T4) && command.WagonIds.Count > 2)
+            return Result<Guid>.Failure("Tramvay dizileri en fazla 2 vagondan oluşabilir.");
+
         // If some wagons are already in a convoy, they must all share the same one (expand scenario)
         var existingConvoyIds = wagons.Where(w => w.ConvoyId.HasValue).Select(w => w.ConvoyId!.Value).Distinct().ToList();
         if (existingConvoyIds.Count > 1)
@@ -59,6 +69,17 @@ public class CreateConvoyHandler : ICommandHandler<CreateConvoyCommand, Guid>
         {
             if (sortedIndexes[i] != sortedIndexes[i - 1] + 1)
                 return Result<Guid>.Failure("Vagonlar yan yana slotlarda olmalıdır.");
+        }
+
+        // For expand scenario: validate total size including existing convoy members
+        if (existingConvoyId != Guid.Empty)
+        {
+            var existingCount = await _db.Wagons.CountAsync(w => w.ConvoyId == existingConvoyId, ct);
+            var newCount = wagons.Count(w => w.ConvoyId != existingConvoyId);
+            var totalSize = existingCount + newCount;
+
+            if ((line is WagonLine.T1 or WagonLine.T4) && totalSize > 2)
+                return Result<Guid>.Failure("Tramvay dizileri en fazla 2 vagondan oluşabilir.");
         }
 
         Convoy convoy;

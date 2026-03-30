@@ -45,7 +45,9 @@ public static class AuthExtensions
                 ValidateAudience = true,
                 ValidAudience = jwtSection["Audience"],
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.Zero,
+                NameClaimType = "sub",
+                RoleClaimType = "role",
             };
 
             // Allow JWT from query string for SignalR WebSocket connections

@@ -18,7 +18,7 @@ public class CreateWagonHandler : ICommandHandler<CreateWagonCommand, WagonRespo
         if (!Enum.IsDefined(line))
             return Result<WagonResponse>.Failure("Invalid line value.");
 
-        var wagon = Wagon.Create(command.WagonNumber, line);
+        var wagon = Wagon.Create(command.WagonNumber, line, command.TechnicalUnit);
         _db.Wagons.Add(wagon);
         await _db.SaveChangesAsync(ct);
 
@@ -27,6 +27,7 @@ public class CreateWagonHandler : ICommandHandler<CreateWagonCommand, WagonRespo
             Id = wagon.Id,
             WagonNumber = wagon.WagonNumber,
             Line = (byte)wagon.Line,
+            TechnicalUnit = wagon.TechnicalUnit,
             IsOnlyMiddle = wagon.IsOnlyMiddle,
             Status = (byte)wagon.Status,
             ConvoyId = wagon.ConvoyId,

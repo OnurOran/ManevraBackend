@@ -116,27 +116,37 @@ public static class ManevraSeeder
         }
 
         logger.LogInformation("ManevraSeeder: seeding wagons...");
+        var count = 0;
 
-        // M1 hattı — 1xx serisi (IsOnlyMiddle=TRUE) ve 5xx serisi (IsOnlyMiddle=FALSE)
-        int[] m1Series1 = [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120];
-        int[] m1Series5 = [501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520];
+        // ── M1 hattı ────────────────────────────────────────────────────────
+        for (var i = 101; i <= 135; i++)
+        { db.Wagons.Add(Wagon.Create(i, WagonLine.M1, $"ABB1-{i:D4}")); count++; }
 
-        foreach (var num in m1Series1)
-            db.Wagons.Add(Wagon.Create(num, WagonLine.M1));
-        foreach (var num in m1Series5)
-            db.Wagons.Add(Wagon.Create(num, WagonLine.M1));
+        for (var i = 501; i <= 570; i++)
+        { db.Wagons.Add(Wagon.Create(i, WagonLine.M1, $"ABB1-{i:D4}")); count++; }
 
-        // Tramvay hattı — 1xx serisi ve 5xx serisi
-        int[] tramSeries1 = [131, 132, 133, 134, 135, 136, 137, 138, 139, 140];
-        int[] tramSeries5 = [531, 532, 533, 534, 535, 536, 537, 538, 539, 540];
+        // ── T4 hattı — ITA1 serisi ──────────────────────────────────────────
+        for (var i = 401; i <= 418; i++)
+        { db.Wagons.Add(Wagon.Create(i, WagonLine.T4, $"ITA1-{i:D4}")); count++; }
 
-        foreach (var num in tramSeries1)
-            db.Wagons.Add(Wagon.Create(num, WagonLine.Tramvay));
-        foreach (var num in tramSeries5)
-            db.Wagons.Add(Wagon.Create(num, WagonLine.Tramvay));
+        // ── T4 hattı — KTA1 serisi ──────────────────────────────────────────
+        int[] kta = [203,204,206,207,210,211,213,214,215,216,218,219,220,222,223,225,226,227,228,230,234,236,237,245,247,251,297];
+        foreach (var n in kta)
+        { db.Wagons.Add(Wagon.Create(n, WagonLine.T4, $"KTA1-{n:D4}")); count++; }
+
+        // ── T4 hattı — RHM1 serisi ──────────────────────────────────────────
+        for (var i = 301; i <= 334; i++)
+        { db.Wagons.Add(Wagon.Create(i, WagonLine.T4, $"RHM1-{i:D4}")); count++; }
+
+        // ── T1 hattı — ATA1 serisi ──────────────────────────────────────────
+        for (var i = 801; i <= 837; i++)
+        { db.Wagons.Add(Wagon.Create(i, WagonLine.T1, $"ATA1-{i:D4}")); count++; }
+
+        // ── T1 hattı — BTA1 serisi ──────────────────────────────────────────
+        for (var i = 701; i <= 755; i++)
+        { db.Wagons.Add(Wagon.Create(i, WagonLine.T1, $"BTA1-{i:D4}")); count++; }
 
         await db.SaveChangesAsync();
-        logger.LogInformation("ManevraSeeder: wagon seeding complete ({Count} wagons).",
-            m1Series1.Length + m1Series5.Length + tramSeries1.Length + tramSeries5.Length);
+        logger.LogInformation("ManevraSeeder: wagon seeding complete ({Count} wagons).", count);
     }
 }

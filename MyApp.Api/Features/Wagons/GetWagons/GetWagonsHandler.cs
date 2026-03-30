@@ -34,6 +34,7 @@ public class GetWagonsHandler : IQueryHandler<GetWagonsQuery, List<WagonResponse
                     Id = x.Wagon.Id,
                     WagonNumber = x.Wagon.WagonNumber,
                     Line = (byte)x.Wagon.Line,
+                    TechnicalUnit = x.Wagon.TechnicalUnit,
                     IsOnlyMiddle = x.Wagon.IsOnlyMiddle,
                     Status = (byte)x.Wagon.Status,
                     ConvoyId = x.Wagon.ConvoyId,
